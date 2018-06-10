@@ -5,20 +5,20 @@ module Actions (
 
 import ClassyPrelude
 
-import Control.Lens ((&), (^.), (%~), (+~))
-import Types (Player, Direction(..), UI, Direction(..), player, position, obstacles)
+import Control.Lens ((&), (^.), (.~), (%~), (+~))
+import Types (Player, Direction(..), UI, Direction(..), State(..), reset, player, position, obstacles, state, speed)
 import Loop (fps)
 
--- distance per second
-speed :: Float
-speed = 10
-
 jump :: UI -> UI
-jump = player %~ startJump
+jump ui = case ui ^. state of
+    Playing -> ui & player %~ startJump
+    GameOver -> reset ui
 
 frame :: UI -> UI
-frame ui = ui & player %~ animate & position +~ distance
-    where distance = if collision ui then 0 else 1 / fromIntegral fps * speed
+frame ui = ui & state .~ st & player %~ animate & position +~ distance
+    where gameOver = collision ui
+          distance = if gameOver then 0 else 1 / fromIntegral fps * fromIntegral (ui ^. speed)
+          st = if gameOver then GameOver else Playing
 
 -- internal functions
 collision :: UI -> Bool

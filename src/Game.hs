@@ -35,9 +35,18 @@ app = App {
   , appAttrMap = const attr
 }
 
+getSpeed :: IO Int
+getSpeed = do
+    args <- getArgs
+    return $ case args of
+        [speed] -> fromMaybe 10 $ readMay speed
+        _ -> 10
+
+
 play :: IO ()
 play = do
     chan <- newBChan 1
     loop chan
     s <- getDimensions
-    void $ customMain (mkVty defaultConfig) (Just chan) app $ create s
+    speed <- getSpeed
+    void $ customMain (mkVty defaultConfig) (Just chan) app $ create s speed

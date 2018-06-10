@@ -1,8 +1,12 @@
-## To Do
+## Features
 
 - Randomise obstacle placement
-- Collision detection
 - Jump animation should be controlled by fps
+
+## Bugs
+
+- Collision detection fails at high speeds
 
 ## Done
 
+- Collision detection

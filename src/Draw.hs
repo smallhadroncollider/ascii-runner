@@ -4,9 +4,11 @@ import ClassyPrelude
 
 import Control.Lens ((^.))
 
-import Brick (Widget, AttrName, Padding(Pad), vBox, str, withAttr, padTop, padLeft, vBox)
+import Brick (Widget, AttrName, Padding(Pad), vBox, txt, str, withAttr, padTop, padLeft, vBox, emptyWidget)
+import Brick.Widgets.Center (center)
+
 import Attr (grass, ground)
-import Types (Name, UI, Obstacles, dimensions, position, player, obstacles)
+import Types (Name, UI, Obstacles, State(..), dimensions, position, player, obstacles, state)
 
 makeRow :: Int -> AttrName -> Char -> Widget Name
 makeRow screenWidth attr char = withAttr attr . str $ const char <$> [1 .. screenWidth]
@@ -21,11 +23,20 @@ drawSprite :: UI -> Int -> Widget Name
 drawSprite ui h = padTop (Pad offset) $ padLeft (Pad 3) widget
     where (_, jump) = ui ^. player
           offset = h - 5 - jump
-          widget = vBox [str "O", str "+", str "W"]
+          widget = vBox [txt "O", txt "+", txt "W"]
+
+drawGameOver :: UI -> Widget Name
+drawGameOver ui = case ui ^. state of
+    GameOver -> center . vBox $ txt <$> [
+            "     Game Over!     "
+          , "Press Space to retry"
+        ]
+    Playing -> emptyWidget
 
 draw :: UI -> [Widget Name]
 draw ui = [
         score
+      , drawGameOver ui
       , drawSprite ui h
       , padTop (Pad (h - 3)) (vBox rows)
     ]
@@ -35,4 +46,4 @@ draw ui = [
           obs = ui ^. obstacles
           (w, h) = ui ^. dimensions
           score = str $ "Score: " ++ show i'
-          rows = [drawObstacles obs i' w, makeRow w grass '=' , makeRow w ground 'X']
+          rows = [drawObstacles obs i' w, makeRow w grass '=', makeRow w ground 'X']
