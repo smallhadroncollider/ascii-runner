@@ -22,7 +22,7 @@ frame ui = ui & state .~ st & player %~ animate & position +~ distance
 
 -- internal functions
 collision :: UI -> Bool
-collision ui = pos `elem` (ui ^. obstacles) && jumpHeight < 1
+collision ui = pos `elem` (ui ^. obstacles) && jumpHeight < 2
     where pos = floor (ui ^. position) + 3
           (_, jumpHeight) = ui ^. player
 

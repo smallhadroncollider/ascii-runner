@@ -7,7 +7,7 @@ import Control.Lens ((^.))
 import Brick (Widget, AttrName, Padding(Pad), vBox, txt, str, withAttr, padTop, padLeft, vBox, emptyWidget)
 import Brick.Widgets.Center (center)
 
-import Attr (grass, ground)
+import Attr (grass, ground, obstacle)
 import Types (Name, UI, Obstacles, State(..), dimensions, position, player, obstacles, state)
 
 makeRow :: Int -> AttrName -> Char -> Widget Name
@@ -17,7 +17,7 @@ drawObstacle :: Obstacles -> Int -> Char
 drawObstacle obs i = if i `elem` obs then 'Y' else ' '
 
 drawObstacles :: Obstacles -> Int -> Int -> Widget Name
-drawObstacles obs pos screenWidth = str $ drawObstacle obs <$> [pos .. screenWidth + pos]
+drawObstacles obs pos screenWidth = withAttr obstacle . str $ drawObstacle obs <$> [pos .. screenWidth + pos]
 
 drawSprite :: UI -> Int -> Widget Name
 drawSprite ui h = padTop (Pad offset) $ padLeft (Pad 3) widget
