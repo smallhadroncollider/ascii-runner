@@ -2,7 +2,7 @@ module Game (play) where
 
 import ClassyPrelude
 
-import Control.Lens ((&), (+~), (.~))
+import Control.Lens ((&), (.~))
 
 import Brick
 import Brick.BChan (newBChan)
@@ -11,19 +11,14 @@ import Graphics.Vty (Event(EvKey), Key(KChar), mkVty, defaultConfig)
 import qualified Actions (jump, frame)
 import Attr (attr)
 import Draw (draw)
-import Loop (loop, fps)
-import Types (Name, UI, Tick(Tick), create, dimensions, position)
+import Loop (loop)
+import Types (Name, UI, Tick(Tick), create, dimensions)
 import Window (getDimensions)
-
--- distance per second
-speed :: Float
-speed = 10
 
 handleTick :: UI -> EventM Name (Next UI)
 handleTick ui = do
-    let distance = 1 / fromIntegral fps * speed
     s <- liftIO getDimensions
-    continue . Actions.frame $ ui & position +~ distance & dimensions .~ s
+    continue $ Actions.frame (ui & dimensions .~ s)
 
 handleEvent :: UI -> BrickEvent Name Tick -> EventM Name (Next UI)
 handleEvent ui (VtyEvent (EvKey (KChar 'q') [])) = halt ui

@@ -6,16 +6,16 @@ import Control.Lens ((^.))
 
 import Brick (Widget, AttrName, Padding(Pad), vBox, str, withAttr, padTop, padLeft, vBox)
 import Attr (grass, ground)
-import Types (Name, UI, dimensions, position, player)
+import Types (Name, UI, Obstacles, dimensions, position, player, obstacles)
 
 makeRow :: Int -> AttrName -> Char -> Widget Name
 makeRow screenWidth attr char = withAttr attr . str $ const char <$> [1 .. screenWidth]
 
-drawObstacle :: Int -> Int -> Char
-drawObstacle offset i = if (i + offset) > 20 && (i + offset) `mod` 21 == 0 then 'Y' else ' '
+drawObstacle :: Obstacles -> Int -> Char
+drawObstacle obs i = if i `elem` obs then 'Y' else ' '
 
-drawObstacles :: Int -> Int -> Widget Name
-drawObstacles pos screenWidth = str $ drawObstacle pos <$> [1 .. screenWidth]
+drawObstacles :: Obstacles -> Int -> Int -> Widget Name
+drawObstacles obs pos screenWidth = str $ drawObstacle obs <$> [pos .. screenWidth + pos]
 
 drawSprite :: UI -> Int -> Widget Name
 drawSprite ui h = padTop (Pad offset) $ padLeft (Pad 3) widget
@@ -32,6 +32,7 @@ draw ui = [
 
     where i = ui ^. position
           i' = floor i :: Int
+          obs = ui ^. obstacles
           (w, h) = ui ^. dimensions
           score = str $ "Score: " ++ show i'
-          rows = [drawObstacles i' w, makeRow w grass '=' , makeRow w ground 'X']
+          rows = [drawObstacles obs i' w, makeRow w grass '=' , makeRow w ground 'X']
