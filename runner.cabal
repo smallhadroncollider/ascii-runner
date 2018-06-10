@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: b426091daad758c677d6520496ad10ec2a7edf5736a931074fd2e3af0a02d8ab
+-- hash: 22a8e598036550479d5a138ea834c6463f6cd4717900af91c1d28cc31f5ce0aa
 
 name:           runner
 version:        0.1.0.0
@@ -46,7 +46,6 @@ library
     , lens
     , random
     , terminal-size
-    , text
     , vty
   default-language: Haskell2010
 
@@ -61,26 +60,5 @@ executable runner
   build-depends:
       base >=4.7 && <5
     , classy-prelude
-    , lens
-    , random
     , runner
-    , text
-  default-language: Haskell2010
-
-test-suite runner-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
-  other-modules:
-      Paths_runner
-  hs-source-dirs:
-      test
-  default-extensions: OverloadedStrings NoImplicitPrelude
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      base >=4.7 && <5
-    , classy-prelude
-    , lens
-    , random
-    , runner
-    , text
   default-language: Haskell2010

@@ -21,9 +21,6 @@ default-extensions:
 dependencies:
 - base >= 4.7 && < 5
 - classy-prelude
-- lens
-- text
-- random
 
 library:
   source-dirs: src
@@ -31,22 +28,13 @@ library:
   - vty
   - brick
   - terminal-size
+  - lens
+  - random
 
 executables:
   runner:
     main:                Main.hs
     source-dirs:         app
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - runner
-
-tests:
-  runner-test:
-    main:                Spec.hs
-    source-dirs:         test
     ghc-options:
     - -threaded
     - -rtsopts
