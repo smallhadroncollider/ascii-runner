@@ -1,0 +1,63 @@
+resolver="lts-11.13"
+ghcv="8.2.2"
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+
+if [ $branch != "master" ]; then
+    echo "\033[0;31mMust be on master branch\033[0m"
+    exit
+fi
+
+if [ ! -d ".stack-work" ]; then
+    echo "\033[0;31mMust be run in project root\033[0m"
+    exit
+fi
+
+if [ -z "$1" ]; then
+    echo "\033[0;31mVersion number required\033[0m"
+    exit
+fi
+
+rm -rf .stack-work/install
+
+stack build --ghc-options -O3
+stack docker pull
+stack build --docker --ghc-options -O3
+
+mkdir -p "releases/$1/runner/DEBIAN"
+mkdir -p "releases/$1/runner/usr/local/bin"
+LINUX_DIR=$(ls .stack-work/install | grep linux)
+
+tar -czvf "releases/$1/runner-$1_x86-64-linux.tar.gz" --directory=".stack-work/install/$LINUX_DIR/$resolver/$ghcv/bin" "runner"
+tar -czvf "releases/$1/runner-$1_x86-64-mac.tar.gz" --directory=".stack-work/install/x86_64-osx/$resolver/$ghcv/bin" "runner"
+
+cp ".stack-work/install/$LINUX_DIR/$resolver/$ghcv/bin/runner" "releases/$1/runner/usr/local/bin"
+
+echo "Package: runner
+Version: $1
+Maintainer: Mark Wales
+Architecture: amd64
+Description: An infinite runner in your terminal" > "releases/$1/runner/DEBIAN/control"
+
+docker run -v "$PWD/releases/$1":/usr/src/app -w /usr/src/app debian dpkg-deb --build runner
+
+mv "releases/$1/runner.deb" "releases/$1/runner-$1_x86-64-linux.deb"
+rm -rf "releases/$1/runner"
+
+open "releases/$1"
+
+printf "
+Release Template
+
+---------------------------------------------
+
+- changes...
+
+### Installation
+
+- Mac/Linux: download binary and place it in a directory in your \`\$PATH\` (e.g. \`/usr/local/bin\`)
+- Debian (including Ubuntu): download the \`.deb\` file and run \`dpkg -i runner-$1_x86-64-linux.deb\`
+- Fedora: Run \`sudo dnf install ncurses-compat-libs\` then download and run binary as described above
+
+---------------------------------------------
+"

@@ -1,0 +1,43 @@
+name:                runner
+version:             0.1.0.0
+github:              "smallhadroncollider/ascii-runner"
+license:             BSD3
+author:              "Mark Wales"
+maintainer:          "mark@smallhadroncollider.com"
+copyright:           "2018 Mark Wales"
+
+extra-source-files:
+- README.md
+
+synopsis:            An ASCII inifinite runner
+category:            Game
+
+description:         Please see the README on GitHub at <https://github.com/smallhadroncollider/ascii-runner#readme>
+
+default-extensions:
+- OverloadedStrings
+- NoImplicitPrelude
+
+dependencies:
+- base >= 4.7 && < 5
+- classy-prelude
+
+library:
+  source-dirs: src
+  dependencies:
+  - vty
+  - brick
+  - terminal-size
+  - lens
+  - random
+
+executables:
+  runner:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - runner
