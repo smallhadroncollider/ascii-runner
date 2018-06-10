@@ -6,20 +6,28 @@ import Control.Lens ((&), (+~), (.~))
 
 import Brick
 import Brick.BChan (newBChan)
-import Graphics.Vty (Event(EvKey), Key(KChar), defAttr, mkVty, defaultConfig)
+import Graphics.Vty (Event(EvKey), Key(KChar), mkVty, defaultConfig)
 
+import qualified Actions (jump, frame)
+import Attr (attr)
 import Draw (draw)
-import Loop (loop)
+import Loop (loop, fps)
 import Types (Name, UI, Tick(Tick), create, dimensions, position)
 import Window (getDimensions)
 
+-- distance per second
+speed :: Float
+speed = 2
+
 handleTick :: UI -> EventM Name (Next UI)
 handleTick ui = do
+    let distance = 1 / fromIntegral fps * speed
     s <- liftIO getDimensions
-    continue $ ui & position +~ 1 & dimensions .~ s
+    continue . Actions.frame $ ui & position +~ distance & dimensions .~ s
 
 handleEvent :: UI -> BrickEvent Name Tick -> EventM Name (Next UI)
 handleEvent ui (VtyEvent (EvKey (KChar 'q') [])) = halt ui
+handleEvent ui (VtyEvent (EvKey (KChar ' ') [])) = continue $ Actions.jump ui
 handleEvent ui (AppEvent Tick) = handleTick ui
 handleEvent ui _ = continue ui
 
@@ -29,7 +37,7 @@ app = App {
   , appChooseCursor = neverShowCursor
   , appHandleEvent = handleEvent
   , appStartEvent = return
-  , appAttrMap = const $ attrMap defAttr []
+  , appAttrMap = const attr
 }
 
 play :: IO ()

@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a1fe108139c7ce97a970a01de3e8fd766c8f1914e1d08a88019fc9f28c6a5688
+-- hash: b90bd57348e518cc1d6548499aca62e9de358cab6516552175c3498ac0866d8c
 
 name:           runner
 version:        0.1.0.0
@@ -27,6 +27,8 @@ source-repository head
 
 library
   exposed-modules:
+      Actions
+      Attr
       Draw
       Game
       Loop

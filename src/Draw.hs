@@ -4,22 +4,27 @@ import ClassyPrelude
 
 import Control.Lens ((^.))
 
-import Brick (vBox, txt, Widget)
-import Types (Name, UI, dimensions, position)
+import Brick (Widget, AttrName, Padding(Pad), vBox, str, withAttr, padTop, padLeft, vBox)
+import Attr (grass, ground)
+import Types (Name, UI, dimensions, position, player)
 
-period :: Float
-period = 4 * pi
+makeRow :: Int -> AttrName -> Char -> Widget Name
+makeRow screenWidth attr char = withAttr attr . str $ const char <$> [1 .. screenWidth]
 
-pixel :: Float -> Float -> Char
-pixel y i = if y > cos i then '█' else ' '
-
-makeRow :: Float -> Float -> Float -> Text
-makeRow xStart screenWidth y = pack $ pixel y <$> [xStart, xStart + w .. period + xStart]
-    where w = period / screenWidth
+drawSprite :: UI -> Int -> Widget Name
+drawSprite ui h = padTop (Pad offset) $ padLeft (Pad 3) widget
+    where (_, jump) = ui ^. player
+          offset = h - 5 - jump
+          widget = vBox [str "O", str "+", str "W"]
 
 draw :: UI -> [Widget Name]
-draw ui = do
-    let i = ui ^. position
-    let (w, h) = ui ^. dimensions
-    let h' = 2 / (fromIntegral h - 1)
-    [vBox $ txt . makeRow (fromIntegral i * 0.1) (fromIntegral w - 1) <$> [-1, (-1 + h') .. 1]]
+draw ui = [
+        score
+      , drawSprite ui h
+      , padTop (Pad (h - 2)) (vBox rows)
+    ]
+
+    where i = ui ^. position
+          (w, h) = ui ^. dimensions
+          score = str $ "Score: " ++ show (floor i :: Int)
+          rows = [makeRow w grass '=' , makeRow w ground 'X']
