@@ -5,14 +5,19 @@ module Actions (
 
 import ClassyPrelude
 
-import Control.Lens ((&), (.~), (%~))
+import Control.Lens ((%~))
 import Types (Player, Direction(..), UI, Direction(..), player)
 
 jump :: UI -> UI
-jump ui = ui & player .~ (Types.Up, 1)
+jump = player %~ startJump
 
 frame :: UI -> UI
 frame = player %~ animate
+
+-- internal functions
+startJump :: Player -> Player
+startJump (Types.Level, _) = (Types.Up, 1)
+startJump pl = pl
 
 animate :: Player -> Player
 animate (Types.Level, pos) = (Types.Level, pos)
