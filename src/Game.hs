@@ -17,7 +17,7 @@ import Window (getDimensions)
 
 -- distance per second
 speed :: Float
-speed = 2
+speed = 10
 
 handleTick :: UI -> EventM Name (Next UI)
 handleTick ui = do
