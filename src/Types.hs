@@ -50,10 +50,10 @@ create s sp = UI {
     }
 
 reset :: UI -> UI
-reset = (position .~ 0)
+reset = (state .~ Playing)
     . (player .~ (Level, 0))
     . (obstacles .~ [20, 38 .. 300])
-    . (state .~ Playing)
+    . (position .~ 0)
 
 data Tick = Tick
 type Name = ()

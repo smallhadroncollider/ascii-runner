@@ -23,6 +23,7 @@ dependencies:
 - classy-prelude
 - lens
 - text
+- random
 
 library:
   source-dirs: src

@@ -6,7 +6,7 @@ module Actions (
 import ClassyPrelude
 
 import Control.Lens ((&), (^.), (.~), (%~), (+~))
-import Types (Player, Direction(..), UI, Direction(..), State(..), reset, player, position, obstacles, state, speed)
+import Types (Player, Direction(..), UI, Direction(..), State(..), Obstacles, reset, player, position, obstacles, state, speed)
 import Loop (fps)
 
 jump :: UI -> UI
@@ -15,15 +15,30 @@ jump ui = case ui ^. state of
     GameOver -> reset ui
 
 frame :: UI -> UI
-frame ui = ui & state .~ st & player %~ animate & position +~ distance
+frame ui = case ui ^. state of
+    Playing -> nextFrame ui
+    _ -> ui
+
+-- internal functions
+nextFrame :: UI -> UI
+nextFrame ui = ui
+    & state .~ st
+    & player %~ animate
+    & position +~ distance
+    & obstacles %~ trimObstacles ui
+
     where gameOver = collision ui
           distance = if gameOver then 0 else 1 / fromIntegral fps * fromIntegral (ui ^. speed)
           st = if gameOver then GameOver else Playing
 
--- internal functions
+trimObstacles :: UI -> Obstacles -> Obstacles
+trimObstacles ui = filter (> pos)
+    where pos = floor $ ui ^. position
+
 collision :: UI -> Bool
-collision ui = pos `elem` (ui ^. obstacles) && jumpHeight < 2
-    where pos = floor (ui ^. position) + 3
+collision ui = next < pos + 2 && next > pos - 2 && jumpHeight < 2
+    where pos = floor (ui ^. position) + 4
+          next = fromMaybe 0 $ headMay (ui ^. obstacles)
           (_, jumpHeight) = ui ^. player
 
 startJump :: Player -> Player
