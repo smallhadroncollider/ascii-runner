@@ -2,6 +2,12 @@
 
 An infinite runner in your terminal
 
+![Screenshot](http://files.smallhadroncollider.com/runner.gif)
+
+## Installation
+
+See [latest release](https://github.com/smallhadroncollider/ascii-runner/releases)
+
 ## Usage
 
 Run `runner`
