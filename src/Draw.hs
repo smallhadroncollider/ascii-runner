@@ -29,7 +29,7 @@ drawGameOver :: UI -> Widget Name
 drawGameOver ui = case ui ^. state of
     GameOver -> center . vBox $ txt <$> [
             "     Game Over!     "
-          , "Press Space to retry"
+          , "Press Enter to retry"
         ]
     Playing -> emptyWidget
 

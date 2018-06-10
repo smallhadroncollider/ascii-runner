@@ -6,9 +6,9 @@ import Control.Lens ((&), (.~))
 
 import Brick
 import Brick.BChan (newBChan)
-import Graphics.Vty (Event(EvKey), Key(KChar), mkVty, defaultConfig)
+import Graphics.Vty (Event(EvKey), Key(KChar, KEnter), mkVty, defaultConfig)
 
-import qualified Actions (jump, frame)
+import qualified Actions (restart, jump, frame)
 import Attr (attr)
 import Draw (draw)
 import Loop (loop)
@@ -22,6 +22,7 @@ handleTick ui = do
 
 handleEvent :: UI -> BrickEvent Name Tick -> EventM Name (Next UI)
 handleEvent ui (VtyEvent (EvKey (KChar 'q') [])) = halt ui
+handleEvent ui (VtyEvent (EvKey KEnter [])) = continue $ Actions.restart ui
 handleEvent ui (VtyEvent (EvKey (KChar ' ') [])) = continue $ Actions.jump ui
 handleEvent ui (AppEvent Tick) = handleTick ui
 handleEvent ui _ = continue ui
