@@ -2,7 +2,8 @@ module Game (play) where
 
 import ClassyPrelude
 
-import Control.Lens ((&), (.~))
+import Control.Lens ((&), (.~), (^.))
+import System.Random (getStdRandom, randomR)
 
 import Brick
 import Brick.BChan (newBChan)
@@ -12,13 +13,16 @@ import qualified Actions (restart, jump, frame)
 import Attr (attr)
 import Draw (draw)
 import Loop (loop)
-import Types (Name, UI, Tick(Tick), create, dimensions)
+import Types (Name, UI, Tick(Tick), create, speed, dimensions)
 import Window (getDimensions)
 
 handleTick :: UI -> EventM Name (Next UI)
 handleTick ui = do
+    let sp = ui ^. speed
+    let minDistance = sp `div` 2
     s <- liftIO getDimensions
-    continue $ Actions.frame (ui & dimensions .~ s)
+    r <- liftIO $ getStdRandom (randomR (minDistance, sp * 3))
+    continue $ Actions.frame r (ui & dimensions .~ s)
 
 handleEvent :: UI -> BrickEvent Name Tick -> EventM Name (Next UI)
 handleEvent ui (VtyEvent (EvKey (KChar 'q') [])) = halt ui
@@ -40,7 +44,7 @@ getSpeed :: IO Int
 getSpeed = do
     args <- getArgs
     return $ case args of
-        [speed] -> fromMaybe 10 $ readMay speed
+        [sp] -> fromMaybe 10 $ readMay sp
         _ -> 10
 
 
@@ -49,5 +53,5 @@ play = do
     chan <- newBChan 1
     loop chan
     s <- getDimensions
-    speed <- getSpeed
-    void $ customMain (mkVty defaultConfig) (Just chan) app $ create s speed
+    sp <- getSpeed
+    void $ customMain (mkVty defaultConfig) (Just chan) app $ create s sp

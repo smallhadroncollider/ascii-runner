@@ -19,7 +19,7 @@ module Types (
 
 import ClassyPrelude
 
-import Control.Lens ((.~), makeLenses)
+import Control.Lens ((&), (^.), (.~), makeLenses)
 
 import Window (Dimensions)
 
@@ -44,16 +44,18 @@ create s sp = UI {
         _position = 0
       , _dimensions = s
       , _player = (Level, 0)
-      , _obstacles = [fst s, fst s + 18 .. 300]
+      , _obstacles = [fst s]
       , _state = Playing
       , _speed = sp
     }
 
 reset :: UI -> UI
-reset = (state .~ Playing)
-    . (player .~ (Level, 0))
-    . (obstacles .~ [20, 38 .. 300])
-    . (position .~ 0)
+reset ui = ui
+    & state .~ Playing
+    & player .~ (Level, 0)
+    & obstacles .~ [fst s]
+    & position .~ 0
+    where s = ui ^. dimensions
 
 data Tick = Tick
 type Name = ()
