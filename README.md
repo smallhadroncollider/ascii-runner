@@ -4,7 +4,7 @@ An infinite runner in your terminal
 
 If you enjoy ASCII-runner, you might also like [taskell](https://github.com/smallhadroncollider/taskell) - a command-line Kanban board.
 
-![Screenshot](http://files.smallhadroncollider.com/runner.gif)
+![Screenshot](http://files.smallhadroncollider.com/runner-0.2.0.gif)
 
 ## Installation
 
