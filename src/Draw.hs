@@ -4,11 +4,13 @@ import ClassyPrelude
 
 import Control.Lens ((^.))
 
+import Data.Sequence ((!?))
+
 import Brick (Widget, AttrName, Padding(Pad), vBox, txt, str, withAttr, padTop, padLeft, vBox, emptyWidget)
 import Brick.Widgets.Center (center)
 
 import Attr (grass, ground, obstacle)
-import Types (Name, UI, Obstacles, State(..), dimensions, position, player, obstacles, state)
+import Types (Name, UI, Obstacles, State(..), Direction(Level), dimensions, position, player, obstacles, state)
 
 makeRow :: Int -> AttrName -> Char -> Widget Name
 makeRow screenWidth attr char = withAttr attr . str $ const char <$> [1 .. screenWidth]
@@ -19,11 +21,25 @@ drawObstacle obs i = if i `elem` obs then 'Y' else ' '
 drawObstacles :: Obstacles -> Int -> Int -> Widget Name
 drawObstacles obs pos screenWidth = withAttr obstacle . str $ drawObstacle obs <$> [pos .. screenWidth + pos]
 
-drawSprite :: UI -> Int -> Widget Name
-drawSprite ui h = padTop (Pad offset) $ padLeft (Pad 3) widget
-    where (_, jump) = ui ^. player
-          offset = h - 5 - jump
-          widget = vBox [txt "O", txt "+", txt "W"]
+legs :: Seq Text
+legs = fromList [
+        "/\\ /\\"
+      , "// /\\"
+      , "// //"
+      , "/\\ //"
+      , "\\\\ /\\"
+    ]
+
+drawLegs :: Direction -> Int -> Text
+drawLegs jumping i = case jumping of
+    Level -> fromMaybe "/\\ /\\" (legs !? ((i `div` 2) `mod` length legs))
+    _ -> "// \\\\"
+
+drawSprite :: UI -> Int -> Int -> Widget Name
+drawSprite ui i h = padTop (Pad offset) $ padLeft (Pad 3) widget
+    where (jumping, jump) = ui ^. player
+          offset = h - 4 - jump
+          widget = vBox [txt "[===]0", txt (drawLegs jumping i)]
 
 drawGameOver :: UI -> Widget Name
 drawGameOver ui = case ui ^. state of
@@ -37,7 +53,7 @@ draw :: UI -> [Widget Name]
 draw ui = [
         score
       , drawGameOver ui
-      , drawSprite ui h
+      , drawSprite ui i' h
       , padTop (Pad (h - 3)) (vBox rows)
     ]
 

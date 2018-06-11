@@ -19,9 +19,8 @@ import Window (getDimensions)
 handleTick :: UI -> EventM Name (Next UI)
 handleTick ui = do
     let sp = ui ^. speed
-    let minDistance = sp `div` 2
     s <- liftIO getDimensions
-    r <- liftIO $ getStdRandom (randomR (minDistance, sp * 3))
+    r <- liftIO $ getStdRandom (randomR (sp, sp * 3))
     continue $ Actions.frame r (ui & dimensions .~ s)
 
 handleEvent :: UI -> BrickEvent Name Tick -> EventM Name (Next UI)
