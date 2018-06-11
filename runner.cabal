@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 22a8e598036550479d5a138ea834c6463f6cd4717900af91c1d28cc31f5ce0aa
+-- hash: 2b6a6397cffc6bf327499d7a982a0d2436bf25b6bc52c2a33dd9a1eedad91a3d
 
 name:           runner
 version:        0.1.0.0
@@ -43,6 +43,7 @@ library
       base >=4.7 && <5
     , brick
     , classy-prelude
+    , containers
     , lens
     , random
     , terminal-size

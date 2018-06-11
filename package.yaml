@@ -29,6 +29,7 @@ library:
   - brick
   - terminal-size
   - lens
+  - containers
   - random
 
 executables:

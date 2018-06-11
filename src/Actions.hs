@@ -46,7 +46,7 @@ generateObstacles rand ui obs = if shouldAppend then filtered ++ [final + rand] 
           filtered = filter (> pos) obs
 
 collision :: UI -> Bool
-collision ui = next < pos + 2 && next > pos - 2 && jumpHeight < 2
+collision ui = next < pos + 6 && next > pos && jumpHeight < 2
     where pos = floor (ui ^. position) + 3
           next = fromMaybe 0 $ headMay (ui ^. obstacles)
           (_, jumpHeight) = ui ^. player
@@ -56,10 +56,10 @@ startJump (Types.Level, _) = (Types.Up, 1)
 startJump pl = pl
 
 animate :: Player -> Player
-animate (Types.Level, pos) = (Types.Level, pos)
 animate (Types.Up, pos)
-    | pos < 4 = (Types.Up, pos + 1)
+    | pos < 6 = (Types.Up, pos + 1)
     | otherwise = (Types.Down, pos)
 animate (Types.Down, pos)
     | pos > 0 = (Types.Down, pos - 1)
     | otherwise = (Types.Level, 0)
+animate p = p
