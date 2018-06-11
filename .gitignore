@@ -1,4 +1,4 @@
 .stack-work/
-haskell-game.cabal
 *~
 releases/*
+runner.cabal
