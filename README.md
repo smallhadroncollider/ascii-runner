@@ -8,6 +8,10 @@ If you enjoy ASCII-runner, you might also like [taskell](https://github.com/smal
 
 ## Installation
 
+### Binaries
+
+[A binary is available for Mac and Linux](https://github.com/smallhadroncollider/ascii-runner/releases). Download it and copy it to a directory in your `$PATH` (e.g. `/usr/local/bin` or `/usr/bin`).
+
 ### Debian/Ubuntu
 
 [A `.deb` package is available for Debian/Ubuntu](https://github.com/smallhadroncollider/ascii-runner/releases). Download it and install with `dpkg -i <package-name>`.
@@ -16,13 +20,13 @@ If you enjoy ASCII-runner, you might also like [taskell](https://github.com/smal
 
 Run `sudo dnf install ncurses-compat-libs` then download and run binary as described below.
 
-### Binaries
-
-[A binary is available for Mac and Linux](https://github.com/smallhadroncollider/ascii-runner/releases). Download it and copy it to a directory in your `$PATH` (e.g. `/usr/local/bin` or `/usr/bin`).
-
 ### Stack
 
-If none of the above options work you can build ascii-runner using [Stack](https://docs.haskellstack.org/en/stable/README/). First [install Stack on your machine](https://docs.haskellstack.org/en/stable/README/#how-to-install). Then clone the repo and run `stack build && stack install`: this will build ascii-runner and then install it in `~/.local/bin` (so make sure that directory is in your `$PATH`). Building from scratch can take a long time and occasionally doesn't work the first time (if this happens try running it again).
+If none of the above options work you can build ASCII-runner using [Stack](https://docs.haskellstack.org/en/stable/README/). First [install Stack on your machine](https://docs.haskellstack.org/en/stable/README/#how-to-install). Then clone the repo and run `stack build && stack install`: this will build ascii-runner and then install it in `~/.local/bin` (so make sure that directory is in your `$PATH`). Building from scratch can take a long time and occasionally doesn't work the first time (if this happens try running it again).
+
+### Windows
+
+Unfortunately the `vty` package, which this program is heavily dependent on, doesn't currently support Windows. This may change in the future, but for now it means that ASCII-runner is not available for Windows. However, you could [install WSL](https://docs.microsoft.com/en-us/windows/wsl/install-win10) with Ubuntu and then follow the Ubuntu instructions above.
 
 ## Usage
 
